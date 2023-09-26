@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 // Props as function variables
-function Square({ propValue, propClass, propOnClick }) {
+function Square({ propPassedToSquare, propValue, propClass, propOnClick }) {
     // // Local States
     // const [stateValue, setStateValue] = useState("P");
     // ^ stateValue (String) has been moved to parent Board, and renamed stateSquares (Array<String>)
@@ -19,7 +19,7 @@ function Square({ propValue, propClass, propOnClick }) {
 
     return (
         <button className={propClass} onClick={propOnClick}>
-            {/* {stateValue} */}
+            {propPassedToSquare}
             {propValue}
         </button>
     );

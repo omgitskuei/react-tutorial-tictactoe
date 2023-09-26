@@ -35,7 +35,7 @@ function isWinner(activePlayer, arrSquares) {
     return isWinner;
 }
 
-function Board() {
+function Board({ propPassedToSquare }) {
     // Component square used to each handle their own state
     // To collect data from multiple children, or to have two child components
     // communicate with each other, declare the shared state in their parent
@@ -96,6 +96,7 @@ function Board() {
             <div className="displayWinner">{displayWinner}</div>
             <div className='board-row'>
                 <Square
+                    // propPassedToSquare={propPassedToSquare} // this can pass prop from Game > Board > Square
                     propClass='square'
                     propValue={stateSquares[0]}
                     propOnClick={() => handleClick(0)}  // '() =>' passes the function without calling it
@@ -103,7 +104,8 @@ function Board() {
                 <Square
                     propClass='square'
                     propValue={stateSquares[1]}
-                    propOnClick={() => handleClick(1)}  // {handleClick(1)} would have infinitely called function
+                    propOnClick={() => handleClick(1)}  
+                    // {handleClick(1)} would have infinitely called function
                     // calls it once, triggering a re-render, which calls it again, etc.
                 ></Square>
                 <Square
