@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react"
+import React, { Fragment } from "react"
 import Square from "./Square";
 
 let displayWinner = "";
@@ -35,38 +35,42 @@ function isWinner(activePlayer, arrSquares) {
     return isWinner;
 }
 
-function Board({ propPassedToSquare }) {
+function Board({ propAllSquares, propAppendAllSquares, propActivePlayer, propSwapPlayers, propOnClick }) {
     // Component square used to each handle their own state
     // To collect data from multiple children, or to have two child components
     // communicate with each other, declare the shared state in their parent
     // component instead. The parent component can pass that state back down
     // to the children via props. This keeps the child components in sync with
     // each other and with their parent.
-    const [stateSquares, setStateSquares] = useState(Array(9).fill(''));
+    // const [propAllSquares, setpropAllSquares] = useState(Array(9).fill(''));
+    // ^ Lifted up to Game
 
     // A state to track which player (X or O) is active
-    const [stateActivePlayer, setStateActivePlayer] = useState('X'); // Player X always goes first
+    // const [stateActivePlayer, setStateActivePlayer] = useState('X'); // Player X always goes first
+    const latestAllSquares = propAllSquares[propAllSquares.length-1];
     
     function handleClick(index) {
+
         if (end) {
+            console.log("Game has ended - no change needed");
             return;
         }
 
-        console.log("It is player " + stateActivePlayer + "'s turn - Clicked square[" + index + "]");
+        console.log("It is player " + propActivePlayer + "'s turn - Clicked square[" + index + "]");
         // Check if square already has a label
-        if (stateSquares[index] === 'X' || stateSquares[index] === 'O') {
-            console.log("This square already has a label (" + stateSquares[index] + ") - no change needed");
+        if (latestAllSquares[index] === 'X' || latestAllSquares[index] === 'O') {
+            console.log("This square already has a label (" + latestAllSquares[index] + ") - no change needed");
             return;
         }
         
         // Change the square label
-        console.log("The square currently is not 'X' nor 'O' - change to " + stateActivePlayer);
-        stateSquares[index] = stateActivePlayer;
-        const cloneArr = stateSquares.slice(); // Clone and set stateSquare with the clone to force a re-render
-        setStateSquares(cloneArr); // If you did setStateSquares(stateSquares); - No re-rendering would happen
+        console.log("The square currently is not 'X' nor 'O' - change to " + propActivePlayer);
+        latestAllSquares[index] = propActivePlayer;
+        const cloneArr = latestAllSquares.slice(); // Clone and set stateSquare with the clone to force a re-render
+        propAppendAllSquares(cloneArr); // If you did setpropAllSquares(propAllSquares); - No re-rendering would happen
         
         // Check if we have winner
-        if (isWinner(stateActivePlayer, stateSquares)) {
+        if (isWinner(propActivePlayer, latestAllSquares)) {
             end = true;
             return;
         } else {
@@ -74,19 +78,19 @@ function Board({ propPassedToSquare }) {
         }
 
         // Change the active player
-        if (stateActivePlayer === 'X') {
-            console.log(`Swap the active player from ${stateActivePlayer} to O`);
-            setStateActivePlayer('O');
-        } else if (stateActivePlayer === 'O') {
-            console.log(`Swap the active player from ${stateActivePlayer} to X`);
-            setStateActivePlayer('X');
+        if (propActivePlayer === 'X') {
+            console.log(`Swap the active player from ${propActivePlayer} to O`);
+            propSwapPlayers();
+        } else if (propActivePlayer === 'O') {
+            console.log(`Swap the active player from ${propActivePlayer} to X`);
+            propSwapPlayers();
         }
     }
     
     // Check if we have a winner
-    if (isWinner(stateActivePlayer, stateSquares)) {
-        console.log(`Player ${stateActivePlayer} won!`);
-        displayWinner = `Player ${stateActivePlayer} won!`;
+    if (isWinner(propActivePlayer, latestAllSquares)) {
+        console.log(`Player ${propActivePlayer} won!`);
+        displayWinner = `Player ${propActivePlayer} won!`;
     } else {
         displayWinner = `Turn ${counterTurn}`;
     }
@@ -96,55 +100,54 @@ function Board({ propPassedToSquare }) {
             <div className="displayWinner">{displayWinner}</div>
             <div className='board-row'>
                 <Square
-                    // propPassedToSquare={propPassedToSquare} // this can pass prop from Game > Board > Square
                     propClass='square'
-                    propValue={stateSquares[0]}
+                    propValue={latestAllSquares[0]}
                     propOnClick={() => handleClick(0)}  // '() =>' passes the function without calling it
                 ></Square>
                 <Square
                     propClass='square'
-                    propValue={stateSquares[1]}
+                    propValue={latestAllSquares[1]}
                     propOnClick={() => handleClick(1)}  
                     // {handleClick(1)} would have infinitely called function
                     // calls it once, triggering a re-render, which calls it again, etc.
                 ></Square>
                 <Square
                     propClass='square'
-                    propValue={stateSquares[2]}
+                    propValue={latestAllSquares[2]}
                     propOnClick={() => handleClick(2)}
                 ></Square>
             </div>
             <div className='board-row'>
             <Square
                     propClass='square'
-                    propValue={stateSquares[3]}
+                    propValue={latestAllSquares[3]}
                     propOnClick={() => handleClick(3)}
                 ></Square>
                 <Square
                     propClass='square'
-                    propValue={stateSquares[4]}
+                    propValue={latestAllSquares[4]}
                     propOnClick={() => handleClick(4)}
                 ></Square>
                 <Square
                     propClass='square'
-                    propValue={stateSquares[5]}
+                    propValue={latestAllSquares[5]}
                     propOnClick={() => handleClick(5)}
                 ></Square>
             </div>
             <div className='board-row'>
             <Square
                     propClass='square'
-                    propValue={stateSquares[6]}
+                    propValue={latestAllSquares[6]}
                     propOnClick={() => handleClick(6)}
                 ></Square>
                 <Square
                     propClass='square'
-                    propValue={stateSquares[7]}
+                    propValue={latestAllSquares[7]}
                     propOnClick={() => handleClick(7)}
                 ></Square>
                 <Square
                     propClass='square'
-                    propValue={stateSquares[8]}
+                    propValue={latestAllSquares[8]}
                     propOnClick={() => handleClick(8)}
                 ></Square>
             </div>
